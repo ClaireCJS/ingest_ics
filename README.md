@@ -50,7 +50,7 @@ Note that this will create the monitor folder if it doesn't exist, but it will a
 
 ## Usage: File mode
 
-To process an single ics file:
+To process a single ics file:
 
 ```python
 python ingest_ics.py <some_filename.ics>
