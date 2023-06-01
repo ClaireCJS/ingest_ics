@@ -37,9 +37,9 @@ Just install the appropriate packages, and the script should be ready to go.
 pip install -r requirements.txt
 ```
 
- ## Installation: Windows 10: Quick instructions
+ ## Installation: Windows 10: Quick Start instructions
 
-**Quick Start: Download, unzip, click "runme"**
+* **Quick Start: Download, unzip, click "runme"**
 
  ## Installation: Windows 10: Detailed instructions
 
