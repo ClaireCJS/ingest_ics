@@ -1,6 +1,6 @@
 pushd 
 cd ..
-set GRAB=grab.bat
+set GRAB=update-from-BAT.bat
 call validate-environment-variable GRAB
-call grab
+call %GRAB%
 popd

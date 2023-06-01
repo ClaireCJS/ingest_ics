@@ -13,10 +13,12 @@ import glob
 import random
 import webbrowser
 from urllib.parse import urlencode
+from datetime import datetime
+#import pytz
 import emoji
 import arrow
 import pyperclip
-from ics import Calendar
+from ics import Calendar as icsCalendar
 from colorama import Fore, Style, init
 init(autoreset=True)
 
@@ -78,23 +80,32 @@ def fix_ics(ics_string):
 
 def generate_google_calendar_url_from_ics_file(file_path):                                                                                  #pylint: disable=C0103
     """
-    Process an inidvidual ics file and opens a Google Calendar event create page in cresponse
+    Process an individual ics file and opens a Google Calendar event create page in cresponse
     """
     global COPY_URL_TO_CLIPBOARD, AUTOMATICALLY_GO_TO_GOOGLE_CALENDAR_CREATION           ;print(f"* Processing ics file: {file_path}")
-    with open(file_path, 'r', encoding="utf-8") as file: ics_content = file.read()       ;print(f"\t- contents of original ics file={ics_content}")
-    updated_ics_content = fix_ics(ics_content)                                           ;print(f"\t- it is: {updated_ics_content}")
-    calendar = Calendar(updated_ics_content)                                             ;print(f"\t- calendar={calendar}")
-    events = calendar.events                                                             ;print(f"\t- events={events}")
+    with open(file_path, 'r', encoding="utf-8") as file: ics_content = file.read()       ;print(f"\t- contents of original ics file={Fore.LIGHTBLACK_EX}{ics_content}{Fore.WHITE}")
+    updated_ics_content = fix_ics(ics_content)                                           ;print(f"\t- updated_ics_content is: {Fore.GREEN}{updated_ics_content}{Fore.WHITE}")
+    calendar            = icsCalendar(updated_ics_content)                               ;print(f"{Fore.RED}\t- calendar={calendar}{Fore.WHITE}")
+    events              = calendar.events                                                ;print(f"\t- # events={len(events)}")
     for event in events:
-        #tzid_match      = re.search(r"TZID:(.*)", ics_content)                                # Extract time zone identifier from ICS file - this just grabs the first one so technically this is a bug - if we were dealing with multiple time zones this could be a problem, so TODO fix it someday maybe probably never maybe
-        #if tzid_match: tz_identifier = tzid_match.group(1)
-        #else:          tz_identifier = 'UTC'                                                  # Default to UTC if time zone identifier not found
-        #event_timezone = pytz.timezone(tz_identifier)
+        #print(f"{Fore.CYAN}\tevent={event}{Fore.WHITE}")
+        print(f"{Fore.CYAN}\tevent.begin={event.begin}{Fore.WHITE}")
+        print(f"{Fore.BLUE}\tevent.begin.datetime={event.begin.datetime}{Fore.WHITE}")
         title           = event.name
         location        = event.location
         description     = event.description.replace('\n','<BR>')
-        start           = arrow.get(event.begin.datetime)
-        end             = arrow.get(event.end  .datetime)
+        #start          = arrow.get(event.begin.datetime)
+        #end            = arrow.get(event.end  .datetime)
+        #start          = arrow.get(event.begin.datetime).to("UTC").format("YYYYMMDDTHHmmss") + "Z"
+        #end            = arrow.get(event.end  .datetime).to("UTC").format("YYYYMMDDTHHmmss") + "Z"
+        #start          = arrow.get(event.begin.datetime).replace(tzinfo="UTC")
+        #end            = arrow.get(event.end  .datetime).replace(tzinfo="UTC")
+        local_tz        = arrow.now().tzinfo
+        start           = arrow.get(event.begin.datetime).to(local_tz)
+        end             = arrow.get(event.end  .datetime).to(local_tz)
+        print(f"{Fore.LIGHTBLUE_EX}\tarrow.get(event.begin.datetime)={arrow.get(event.begin.datetime)}{Fore.WHITE}")
+        print(f"{Fore.LIGHTCYAN_EX}\tarrow.get(event.begin.datetime).to(local_tz)={arrow.get(event.begin.datetime).to(local_tz)}{Fore.WHITE}")
+
         url             = create_google_calendar_link(start, end, title, location, description)
         print(url)
         if AUTOMATICALLY_GO_TO_GOOGLE_CALENDAR_CREATION:
