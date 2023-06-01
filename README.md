@@ -60,7 +60,7 @@ This will process a single ics file.  This is useful for testing, batch scriptin
 
 ## Contributing
 
-Make your own version with neato changes, if you are so inspired.
+Feel free to make your own version with neato changes, if you are so inspired.
 
 ## License
 
