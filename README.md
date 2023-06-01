@@ -55,7 +55,7 @@ The process an individual ics file:
 python ingest_ics.py event.ics
 ```
 
-This will process a single ics file.  This is useful for testing, batch scripting, or if you have a user saving these .ics files on a network share so that they can be processed on a different machine.
+This will process a single ics file.  This is useful for testing, batch scripting, or if you have a user saving these .ics files on a network share so that they can be processed later on a different machine.
 
 ## Contributing
 
