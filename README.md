@@ -44,7 +44,7 @@ To monitor a folder (c:\calendar by default) for new ics files saved into that f
 python ingest_ics.py
 ```
 
-Note that this will create the monitor folder if it doesn't exist, but it will also mention this on the screen so you will nkow.
+Note that this will create the monitor folder if it doesn't exist, but it will also mention this on the screen so you will know.
 
 
 ## Usage: File mode
