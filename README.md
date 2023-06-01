@@ -79,8 +79,11 @@ What is needed is an endpoint on our PC that processes these files.
 
 This is that endpoint solution.
 
+## Contributing: Compiling
 
-## Contributing
+I absolutely would love to have other people -- as long as you don't live in the GMT timezone -- to compile versions for architectures other than my own (Windows 10). Just make sure to check that your event times are properly translating, first.  The GMT-offset bug in compiled EXEs requires modification in the spec file to work.  Mine can be seen [here](todospecfileurl)
+
+## Contributing: Modification
 
 Feel free to make your own version with neato changes, if you are so inspired.
 
