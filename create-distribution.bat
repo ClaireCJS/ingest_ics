@@ -1,6 +1,7 @@
 @Echo OFF
 
-REM        USAGE: pack-zip BASENAME [basename of the .py/our project name]
+
+REM USAGE: %0 BASENAME [basename of the .py/our project name] but if no BASENAME is given it will assume the current folder name
 
 
 REM SETUP: Get/Generate base name        
@@ -20,7 +21,7 @@ REM Create a BAT file that runs our EXE file
         echo %BASENAME%\%BASENAME%.exe     >%BAT_FILE%
 
 REM Create ZIP file for distribution
-        set ARCH=unknow_architecture
+        set ARCH=unknown_architecture
         if  0 eq  %_X64  (set ARCH=x86)
         if  1 eq  %_X64  (set ARCH=x64)
         set ZIP_FILENAME=%BASENAME%-%@LOWER[%_DOS]-%_DOSVER-%ARCH%.zip
@@ -43,8 +44,6 @@ REM Create ZIP file for distribution
         echo.
         %COLOR_IMPORTANT_LESS%
         dir /k /m            %ZIP_FILENAME%
-
-REM 
 
 
 REM Cleanup

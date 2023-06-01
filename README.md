@@ -87,6 +87,12 @@ I absolutely would love to have other people -- as long as you don't live in the
 
 Feel free to make your own version with neato changes, if you are so inspired.
 
+## Those wacky BAT files?
+
+I use TCC -- Take Command Command Line.
+Technically, my .BAT files are .BTM files.
+If you want to get the ones I have working, contact me, I can help.
+
 ## License
 
 [The Unlicense](https://choosealicense.com/licenses/unlicense/)
