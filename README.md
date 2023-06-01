@@ -81,7 +81,7 @@ This is that endpoint solution.
 
 ## Contributing: Compiling
 
-I absolutely would love to have other people -- as long as you don't live in the GMT timezone -- to compile versions for architectures other than my own (Windows 10). Just make sure to check that your event times are properly translating, first.  The GMT-offset bug in compiled EXEs requires modification in the spec file to work.  Mine can be seen [here](todospecfileurl)
+I absolutely would love to have other people -- as long as you don't live in the GMT timezone -- to compile versions for architectures other than my own (Windows 10). Just make sure to check that your event times are properly translating, first.  The GMT-offset bug in compiled EXEs requires modification in the spec file to work.  Mine can be seen [here](https://github.com/ClioCJS/ingest_ics/blob/main/ingest_ics.spec)
 
 ## Contributing: Modification
 
