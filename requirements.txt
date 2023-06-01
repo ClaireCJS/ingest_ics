@@ -1,0 +1,5 @@
+arrow==1.2.3
+colorama==0.4.6
+emoji==2.2.0
+ics==0.7.2
+pyperclip==1.8.2
