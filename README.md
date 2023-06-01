@@ -40,8 +40,8 @@ pip install -r requirements.txt
  ## Installation: Windows 10
 
 * Download the Windows 10 binary executable from:
-    * [location #1 for ingest_ics-windows10-x64.zip location](github.com/ClioCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip)
-    * [location #2 for ingest_ics-windows10-x64.zip location](github.com/ClaireCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip)
+    * github.com/ClioCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip
+    * github.com/ClaireCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip
 * Unzip the ZIP file
     * Unzip it somewhere permanent, like your desktop, or "c:\Program Files", or "c:\calendar"
     * Make sure you're unzipping the whole thing and not just the files in the top folder ;)
