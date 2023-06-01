@@ -1,18 +1,18 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-#still failed: from PyInstaller.utils.hooks import collect_data_files
-#still failed: datas = collect_data_files("dateutil")
-
+from PyInstaller.utils.hooks import collect_data_files
+datas = collect_data_files("dateutil")
+#^ this will fail without setting data=datas below! Oops!
 
 block_cipher = None
-
 
 a = Analysis(
     ['ingest_ics.py'],
     pathex=[],
     binaries=[],
     #datas=[],
-    datas=[('C:/ProgramData/anaconda3/Lib/site-packages/dateutil/zoneinfo','dateutil/zoneinfo')],
+    #datas=[('C:/ProgramData/anaconda3/Lib/site-packages/dateutil/zoneinfo','dateutil/zoneinfo')#HORRIBLE timezone bugs otherwise!
+    datas=datas,
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
