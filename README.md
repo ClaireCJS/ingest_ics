@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
  ## Installation: Windows 10 EXE: Quick Start instructions
 
-* **Quick Start: Download, unzip, click "runme"**
+* **Quick Start: Click [here](http://github.com/ClioCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip) or [here](http://github.com/ClaireCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip) to download, unzip, click "runme", start saving ics files into c:\calendar**
 
  ## Installation: Windows 10 EXE: Detailed instructions
 
@@ -43,6 +43,8 @@ pip install -r requirements.txt
         * or "c:\calendar", since this will create that folder anyway
 
 * Double-click the "runme.bat" file to run 
+
+* Start saving .ics files into c:\calendar and watch your web browser auto-open with Google Calendar event creation tabs
 
 ## Usage: Monitor mode / Service mode
 
