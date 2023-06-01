@@ -2,7 +2,8 @@
     Google Calendar event is created from ICS files.  Includes ability to monitor a folder.
 
     USAGE:
-        python ingest-ics.py monitor              -     monitors c:/calendar for ics files being dropped into
+        python ingest-ics.py                      -     monitors c:/calendar for ics files being dropped into
+        python ingest-ics.py help                 -     prints usage
         python ingest-ics.py whatever.ics         -     create event from a single ics file
 """
 import os
@@ -14,7 +15,6 @@ import random
 import webbrowser
 from urllib.parse import urlencode
 from datetime import datetime
-#import pytz
 import emoji
 import arrow
 import pyperclip
@@ -29,6 +29,9 @@ COPY_URL_TO_CLIPBOARD                        = False                            
 EMOJI_TO_ADD_TO_BEGINNING_OF_EVENT_TITLE     = "smiling_face_with_horns"        #set to "" to disable, or change to another emoj
 MY_TIME_ZONE                                 = "America/New_York"
 DOT_COLORS                                   = [Fore.RED, Fore.YELLOW, Fore.GREEN, Fore.CYAN, Fore.BLUE, Fore.MAGENTA, Fore.WHITE, Fore.LIGHTBLACK_EX, Fore.LIGHTRED_EX, Fore.LIGHTGREEN_EX, Fore.LIGHTYELLOW_EX, Fore.LIGHTBLUE_EX, Fore.LIGHTMAGENTA_EX, Fore.LIGHTCYAN_EX]
+
+DEBUG_ICS_PROCESSING = False
+DEBUG_DATE_TIMEZONE  = True
 
 def create_google_calendar_link(start, end, title, location, description):
     """
@@ -54,7 +57,7 @@ def create_google_calendar_link(start, end, title, location, description):
     return url
 
 
-def fix_ics(ics_string):
+def fix_malformed_ics(ics_string):
     """
     Fixes malformed ics files that are missing DESCRIPTION tags from the VEVENT and VALARM subsections
     """
@@ -73,7 +76,6 @@ def fix_ics(ics_string):
         return match.group(1) + "\nDESCRIPTION:Alarm\n" + match.group(2)
     updated_ics = vevent_search.sub(replace_vevent_func, updated_ics)
     updated_ics = valarm_search.sub(replace_valarm_func, updated_ics)
-    #pdated_ics = updated_ics.replace(   "☻",   "")
     updated_ics = updated_ics.replace("\n\n", "\n")
     return updated_ics
 
@@ -82,32 +84,36 @@ def generate_google_calendar_url_from_ics_file(file_path):                      
     """
     Process an individual ics file and opens a Google Calendar event create page in cresponse
     """
-    global COPY_URL_TO_CLIPBOARD, AUTOMATICALLY_GO_TO_GOOGLE_CALENDAR_CREATION           ;print(f"* Processing ics file: {file_path}")
-    with open(file_path, 'r', encoding="utf-8") as file: ics_content = file.read()       ;print(f"\t- contents of original ics file={Fore.LIGHTBLACK_EX}{ics_content}{Fore.WHITE}")
-    updated_ics_content = fix_ics(ics_content)                                           ;print(f"\t- updated_ics_content is: {Fore.GREEN}{updated_ics_content}{Fore.WHITE}")
-    calendar            = icsCalendar(updated_ics_content)                               ;print(f"{Fore.RED}\t- calendar={calendar}{Fore.WHITE}")
-    events              = calendar.events                                                ;print(f"\t- # events={len(events)}")
-    for event in events:
-        #print(f"{Fore.CYAN}\tevent={event}{Fore.WHITE}")
-        print(f"{Fore.CYAN}\tevent.begin={event.begin}{Fore.WHITE}")
-        print(f"{Fore.BLUE}\tevent.begin.datetime={event.begin.datetime}{Fore.WHITE}")
-        title           = event.name
-        location        = event.location
-        description     = event.description.replace('\n','<BR>')
-        #start          = arrow.get(event.begin.datetime)
-        #end            = arrow.get(event.end  .datetime)
-        #start          = arrow.get(event.begin.datetime).to("UTC").format("YYYYMMDDTHHmmss") + "Z"
-        #end            = arrow.get(event.end  .datetime).to("UTC").format("YYYYMMDDTHHmmss") + "Z"
-        #start          = arrow.get(event.begin.datetime).replace(tzinfo="UTC")
-        #end            = arrow.get(event.end  .datetime).replace(tzinfo="UTC")
-        local_tz        = arrow.now().tzinfo
-        start           = arrow.get(event.begin.datetime).to(local_tz)
-        end             = arrow.get(event.end  .datetime).to(local_tz)
-        print(f"{Fore.LIGHTBLUE_EX}\tarrow.get(event.begin.datetime)={arrow.get(event.begin.datetime)}{Fore.WHITE}")
-        print(f"{Fore.LIGHTCYAN_EX}\tarrow.get(event.begin.datetime).to(local_tz)={arrow.get(event.begin.datetime).to(local_tz)}{Fore.WHITE}")
+    global COPY_URL_TO_CLIPBOARD, AUTOMATICALLY_GO_TO_GOOGLE_CALENDAR_CREATION, DEBUG_ICS_PROCESSING, DEBUG_DATE_TIMEZONE
 
-        url             = create_google_calendar_link(start, end, title, location, description)
-        print(url)
+    print(f"\n{Fore.YELLOW}* Processing ics file: {file_path}{Fore.WHITE}")
+    with open(file_path, 'r', encoding="utf-8") as file: ics_content = file.read()
+    fixed_ics = fix_malformed_ics(ics_content)
+    calendar  = icsCalendar(fixed_ics)
+    events    = calendar.events
+
+    if DEBUG_ICS_PROCESSING:
+        print(f"\t- contents of original ics file={Fore.RED}{ics_content}{Fore.WHITE}")
+        print(f"\t- fixed_ics is: {Fore.YELLOW}{fixed_ics}{Fore.WHITE}")
+        print(f"{Fore.GREEN}\t- calendar={calendar}{Fore.WHITE}")
+        print(f"\t- # events={len(events)}")
+
+    for event in events:
+        title       = event.name
+        location    = event.location
+        description = event.description.replace('\n','<BR>')
+        local_tz    = arrow.now().tzinfo
+        start       = arrow.get(event.begin.datetime).to(local_tz)
+        end         = arrow.get(event.end  .datetime).to(local_tz)
+        url         = create_google_calendar_link(start, end, title, location, description)
+
+        if DEBUG_DATE_TIMEZONE:
+            print(f"{Fore.CYAN}\tevent.begin={event.begin}{Fore.WHITE}")
+            print(f"{Fore.BLUE}\tevent.begin.datetime={event.begin.datetime}{Fore.WHITE}")
+            print(f"{Fore.LIGHTBLUE_EX}\tarrow.get(event.begin.datetime)={arrow.get(event.begin.datetime)}{Fore.WHITE}")
+            print(f"{Fore.LIGHTCYAN_EX}\tarrow.get(event.begin.datetime).to(local_tz)={arrow.get(event.begin.datetime).to(local_tz)}{Fore.WHITE}")
+
+        print(f"{Fore.GREEN}{Style.BRIGHT}* Generated URL is: {Style.NORMAL}{url}{Fore.WHITE}")
         if AUTOMATICALLY_GO_TO_GOOGLE_CALENDAR_CREATION:
             successful = webbrowser.open_new(url)                                              # open in browser (remove "_new" to not open in new window)
             if not successful:
@@ -172,7 +178,8 @@ def monitor_folder(folder_to_drop_ics_files_in):
 
             # Let the user know the processing was done
             processed_files += 1
-            print(Fore.GREEN + '\n\nProcessed file: ' + ics_file + '\nTotal processed files: ' + str(processed_files))
+            print(f"{Fore.GREEN}{Style.BRIGHT}\n...Successfully processed file: {Style.NORMAL}{ics_file}")
+            print(f"{Fore.CYAN}Total processed files: {Style.BRIGHT}{str(processed_files)}{Fore.WHITE}{Style.NORMAL}")
 
             # Store our generated google calendar URL result in a file
             results_file = f"{processed_folder}/{os.path.basename(ics_file)}.url"       # had processed.on.{time.strftime("%Y%m%d%H%M%S")} in filename but realized the file's date is already exactly that
@@ -182,15 +189,13 @@ def monitor_folder(folder_to_drop_ics_files_in):
 
 def main():
     global FOLDER_TO_DROP_ICS_FILES_IN                                                  #, MY_TIME_ZONE
-    if len(sys.argv) < 2:
+    if len(sys.argv) == 2 and sys.argv[1].lower() in ["help", "-help", "--help", "?", "/?", "-?", "--?"]:
         print(f"{Fore.CYAN}{Style.BRIGHT}\n* Options:\n")
         print(f"{Fore.CYAN}{Style.NORMAL}1. Run with a filename of an .ics file as argument.")
         print(f"{Fore.CYAN}{Style.NORMAL}2. Run with 'monitor' as argument to monitor the folder {FOLDER_TO_DROP_ICS_FILES_IN} for new .ics files")
         sys.exit(777)
 
-    #local_timezone = pytz.timezone(MY_TIME_ZONE)                                       # Replace 'America/New_York' with your local time zone
-
-    if sys.argv[1] == 'monitor':
+    if len(sys.argv) == 1 or bool(len(sys.argv) == 2 and sys.argv[1] == 'monitor'):
         monitor_folder(FOLDER_TO_DROP_ICS_FILES_IN)
         sys.exit()
     elif not os.path.exists(sys.argv[1]):
