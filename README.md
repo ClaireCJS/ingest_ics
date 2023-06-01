@@ -39,6 +39,8 @@ pip install -r requirements.txt
 
  ## Installation: Windows 10
 
+**Quick Start: Download, unzip, click "runme"**
+
 * Download the Windows 10 binary executable from:
     * [here](http://github.com/ClioCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip)
     * [or here](http://github.com/ClaireCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip)
