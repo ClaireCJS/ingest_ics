@@ -14,13 +14,18 @@ Just install the appropriate packages, and the script should be ready to go.
 pip install -r requirements.txt
 ```
 
-## Usage
+## Usage: Monitor mode / Service mode
 
-To monitor a folder (usually c:\calendar) for new ics files saved into that folder:
+To monitor a folder (c:\calendar by default) for new ics files saved into that folder:
 
 ```python
 python ingest_ics.py monitor
 ```
+
+Note that this will create the monitor folder if it doesn't exist.
+
+
+## Usage: File mode
 
 The process an individual ics file:
 
