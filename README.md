@@ -16,18 +16,6 @@ ics files:
 
 * Can be handled by certain browser plugins, but those plugins are usually written to handle links
 
-## Why not just use a browser plugin?
-
-Some websites let you export events to your calendar.
-
-But some force a download of ics files, rather than providing a link to one. 
-
-Browser plugins for ics files are usually designed to process links (at least, the ones I looked at).
-
-What is needed is an endpoint on our PC that processes these files. 
-
-This is that endpoint solution.
-
 
 ## Installation: Python
 
@@ -76,6 +64,19 @@ python ingest_ics.py <some_filename.ics>
 ```
 
 This will process a single ics file.  This is useful for testing, batch scripting, or if you have a user saving these .ics files on a network share so that they can be processed later on a different machine.
+
+## Why not just use a browser plugin?
+
+Some websites let you export events to your calendar.
+
+But some force a download of ics files, rather than providing a link to one. 
+
+Browser plugins for ics files are usually designed to process links (at least, the ones I looked at).
+
+What is needed is an endpoint on our PC that processes these files. 
+
+This is that endpoint solution.
+
 
 ## Contributing
 
