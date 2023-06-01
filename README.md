@@ -36,7 +36,17 @@ Just install the appropriate packages, and the script should be ready to go.
 ```bash
 pip install -r requirements.txt
 ```
- 
+
+ ## Installation: Windows 10
+
+* Download the Windows 10 binary executable from:
+    * [github.com/ClioCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip](github/ingest_ics/ingest_ics-windows10-x64.zip locatin 1)
+    * [github.com/ClaireCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip](github/ingest_ics/ingest_ics-windows10-x64.zip location 2)
+* Unzip the ZIP file
+    * Unzip it somewhere permanent, like your desktop, or into "Program Files" folder, or "c:\calendar"
+    * Make sure you're unzipping the whole thing and not just the files in the top folder ;)
+* Double-click the "runme.bat" file to run 
+
 ## Usage: Monitor mode / Service mode
 
 To monitor a folder (c:\calendar by default) for new ics files saved into that folder, simply run the program with no options, or double-click the EXE (if you have one):
