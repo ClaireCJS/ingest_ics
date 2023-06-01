@@ -44,12 +44,12 @@ pip install -r requirements.txt
     * [or here](http://github.com/ClaireCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip)
 
 * Unzip the ZIP file
+    * Make sure you're unzipping the whole thing and not just the files in the top folder ;)
     * Unzip it somewhere permanent
         * like your desktop
         * or "c:\Program Files"
         * or "c:\calendar", since this will create that folder anyway
 
-    * Make sure you're unzipping the whole thing and not just the files in the top folder ;)
 * Double-click the "runme.bat" file to run 
 
 ## Usage: Monitor mode / Service mode
