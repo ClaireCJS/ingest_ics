@@ -37,11 +37,11 @@ Just install the appropriate packages, and the script should be ready to go.
 pip install -r requirements.txt
 ```
 
- ## Installation: Windows 10: Quick Start instructions
+ ## Installation: Windows 10 EXE: Quick Start instructions
 
 * **Quick Start: Download, unzip, click "runme"**
 
- ## Installation: Windows 10: Detailed instructions
+ ## Installation: Windows 10 EXE: Detailed instructions
 
 * Download the Windows 10 binary executable from:
     * [here](http://github.com/ClioCJS/ingest_ics/raw/main/ingest_ics-windows10-10.0-x64.zip)
