@@ -10,11 +10,14 @@ ics files:
 
 * represent an event
 
-* can be imported into Google Calendar to add an event.
+* can add events to your calendar
 
-* are the only way certain websites export their events
+* are the ONLY way certain websites export their events
 
-* Can be handled by certain browser plugins, but those plugins are usually written to handle links
+* don't work well on PCs
+
+* can be handled by certain browser plugins (but those plugins are usually written to handle links)
+
 
 
 ## Installation: Python
