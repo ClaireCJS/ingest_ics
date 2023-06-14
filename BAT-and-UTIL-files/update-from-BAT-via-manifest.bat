@@ -152,7 +152,10 @@ goto :END_OF_SUBROUTINES
 
 
 
-rem CELEBRATE:
+rem reset our values so they don't accidentally get re-used, and CELEBRATE:
+        SET MANIFEST_FILES=
+        set SECONDARY_BAT_FILES=
+        set SECONDARY_UTIL_FILES=
         call success "*** Successfully updated from personal to '%PROJECT_NAME%' :)"
         echo.
         %PROJECT_DIR%\%
