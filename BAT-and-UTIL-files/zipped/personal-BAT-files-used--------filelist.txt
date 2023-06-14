@@ -1,5 +1,5 @@
 2023-06-01  01:11             18  -11%  ics-ingest.bat
-2023-06-14  15:46          8,397   72%  update-from-BAT-via-manifest.bat
+2023-06-14  15:57          8,540   71%  update-from-BAT-via-manifest.bat
 2023-05-29  22:39             43   -4%  advice.bat
 2023-06-14  03:25          9,053   72%  print-message.bat
 2023-06-09  11:54          1,064   52%  validate-in-path.bat
