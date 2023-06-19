@@ -1,10 +1,7 @@
 2023-06-01  01:11             18  -11%  ics-ingest.bat
-2023-06-14  15:57          8,540   71%  update-from-BAT-via-manifest.bat
 2023-05-29  22:39             43   -4%  advice.bat
 2023-06-14  03:25          9,053   72%  print-message.bat
-2023-06-09  11:54          1,064   52%  validate-in-path.bat
 2023-06-10  23:23             89    4%  validate-environment-variables.bat
-2023-06-10  23:21         11,862   75%  validate-environment-variable.bat
 2023-05-28  09:54             38   -5%  validate-env-var.bat
 2023-05-29  17:47          4,116   71%  white-noise.bat
 2023-06-09  12:15             48    0%  car.bat
@@ -22,3 +19,6 @@
 2019-10-01  10:28            431   43%  randfg.bat
 2019-10-01  10:28            220   36%  randbg.bat
 2023-06-01  16:54            589   45%  py2exe.bat
+2023-06-14  23:38          8,646   72%  update-from-BAT-via-manifest.bat
+2023-06-15  11:32          1,068   51%  validate-in-path.bat
+2023-06-16  13:02         11,623   75%  validate-environment-variable.bat
