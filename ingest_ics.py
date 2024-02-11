@@ -85,7 +85,6 @@ def fix_malformed_ics(ics_string):
     """
     print("* Fixing ics data...")
     summary_search = re.search(r"SUMMARY:(.*)", ics_string)
-    if summary_search is None: raise ValueError("Error: Could not find SUMMARY in the ics file.")
     summary       = summary_search.group(1)
     vevent_search = re.compile(r"(BEGIN:VEVENT.*?)(END:VEVENT)", re.DOTALL)
     valarm_search = re.compile(r"(BEGIN:VALARM.*?)(END:VALARM)", re.DOTALL)
@@ -96,6 +95,8 @@ def fix_malformed_ics(ics_string):
     def replace_valarm_func(match):
         if "DESCRIPTION:" in match.group(0): return match.group(0)
         return match.group(1) + "\nDESCRIPTION:Alarm\n" + match.group(2)
+    if summary_search is None:
+        print('WARNING: Consider throwing: ValueError("Error: Could not find SUMMARY in the ics file."')    # 20240311 stopped throwing this cause of ics files missing summary sections entirely, or so it seemed
     updated_ics = vevent_search.sub(replace_vevent_func, updated_ics)
     updated_ics = valarm_search.sub(replace_valarm_func, updated_ics)
     updated_ics = updated_ics.replace("\n\n", "\n")

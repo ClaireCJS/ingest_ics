@@ -1,4 +1,4 @@
-@Echo Off
+    @Echo Off
 
 :REQUIRES: set-colors.bat (to define certain environment variables that represent ANSI character control sequences)
 
@@ -39,7 +39,7 @@ REM Process parameters
     if %DEBUG_PRINTMESSAGE% eq 1 (echo DEBUG: TYPE=%TYPE%,DO_PAUSE=%DO_PAUSE%,MESSAGE=%MESSAGE%)
     if defined COLOR_%TYPE% (set OUR_COLORTOUSE=%[COLOR_%TYPE%])
     if not defined OUR_COLORTOUSE  (
-        if %DEBUG_PRINTMESSAGE% eq 1 (echo - Oops! Let's try setting OUR_COLORTOUSE to %%COLOR_%@UPPER[%1])
+        if %DEBUG_PRINTMESSAGE% eq 1 (echo %ANSI_COLOR_DEBUG% %RED_FLAG% Oops! Let's try setting OUR_COLORTOUSE to %%COLOR_%@UPPER[%1])
         set TYPE=%1
         set OUR_COLORKEY=COLOR_%TYPE%
         if %DEBUG_PRINTMESSAGE% eq 1 (
@@ -55,13 +55,18 @@ REM Validate parameters
     if %VALIDATED_PRINTMESSAGE_ENV ne 1 (
         call validate-environment-variable  COLOR_%TYPE% "This variable COLOR_%TYPE% should be an existing COLOR_* variable in our environment"
         call validate-environment-variable  MESSAGE skip_validation_existence
-        call validate-environment-variables TYPE BLINK_ON BLINK_OFF REVERSE_ON REVERSE_OFF ITALICS_ON ITALICS_OFF BIG_TEXT_LINE_1 BIG_TEXT_LINE_2 OUR_COLORTOUSE DO_PAUSE 
+        REM call validate-environment-variables BLINK_ON BLINK_OFF REVERSE_ON REVERSE_OFF ITALICS_ON ITALICS_OFF BIG_TEXT_LINE_1 BIG_TEXT_LINE_2 OUR_COLORTOUSE DO_PAUSE EMOJI_TRUMPET ANSI_RESET EMOJI_FLEUR_DE_LIS ANSI_COLOR_WARNING ANSI_COLOR_IMPORTANT RED_FLAG EMOJI_WARNING BIG_TOP_ON BIG_BOT_ON FAINT_ON FAINT_OFF
         set VALIDATED_PRINTMESSAGE_ENV=1
     )
 
 
 REM convert special characters
-    set MESSAGE=%@REPLACE[\n,%@CHAR[12]%@CHAR[13],%@REPLACE[\t,%@CHAR[9],%@UNQUOTE[%MESSAGE]]]
+    set MESSAGE=%@UNQUOTE[%MESSAGE]
+    REM might want to do if %NEWLINE_REPLACEMENT eq 1 instead:
+    if %NEWLINE_REPLACEMENT eq 1 (
+        set MESSAGE=%@REPLACE[\n,%@CHAR[12]%@CHAR[13],%@REPLACE[\t,%@CHAR[9],%MESSAGE]]
+    )
+    if "%NEWLINE_REPLACEMENT%" != "" (set NEWLINE_REPLACEMENT=)
 
 
 REM Type alias/synonym handling
@@ -80,9 +85,11 @@ REM Behavior overides and message decorators depending on the type of message?
     if  "%TYPE%"  eq "DEBUG"          (set DECORATOR_LEFT=- DEBUG: ``   %+ set DECORATOR_RIGHT=)
     if  "%TYPE%"  eq "LESS_IMPORTANT" (set DECORATOR_LEFT=* ``          %+ set DECORATOR_RIGHT=)
     if  "%TYPE%"  eq "IMPORTANT_LESS" (set DECORATOR_LEFT=* ``          %+ set DECORATOR_RIGHT=)
-    if  "%TYPE%"  eq "IMPORTANT"      (set DECORATOR_LEFT=*** ``        %+ set DECORATOR_RIGHT=)
-    if  "%TYPE%"  eq "WARNING"        (set DECORATOR_LEFT=!! ``         %+ set DECORATOR_RIGHT= !!)
-    if  "%TYPE%"  eq "CELEBRATION"    (set DECORATOR_LEFT=*** ``        %+ set DECORATOR_RIGHT=! ***)
+    REM "%TYPE%"  eq "IMPORTANT"      (set DECORATOR_LEFT=%ANSI_RED%%EMOJI_TRUMPET_COLORABLE%%@ANSI_FG[255,127,0]%EMOJI_TRUMPET_COLORABLE%%@ansi_fg[212,234,0]%EMOJI_TRUMPET_COLORABLE%%ANSI_BRIGHT_GREEN%%EMOJI_TRUMPET_COLORABLE%%ANSI_BRIGHT_BLUE%%EMOJI_TRUMPET_COLORABLE%%@ANSI_FG[200,0,200]%EMOJI_TRUMPET_COLORABLE%  %ANSI_RESET%%@ANSI_FG[255,0,0]%reverse_on%%blink_on%%EMOJI_FLEUR_DE_LIS%%blink_off%%reverse_off%%ANSI_COLOR_IMPORTANT% `` %+ set DECORATOR_RIGHT= %ANSI_RESET%%@ANSI_FG[255,0,0]%reverse_on%%blink_on%%EMOJI_FLEUR_DE_LIS%%blink_off%%reverse_off%%ANSI_COLOR_IMPORTANT%  %@ANSI_FG[200,0,200]%EMOJI_TRUMPET_FLIPPED%%ANSI_BRIGHT_BLUE%%EMOJI_TRUMPET_FLIPPED%%ANSI_BRIGHT_GREEN%%EMOJI_TRUMPET_FLIPPED%%@ansi_fg[212,234,0]%EMOJI_TRUMPET_FLIPPED%%@ANSI_FG[255,127,0]%EMOJI_TRUMPET_FLIPPED%%ANSI_RED%%EMOJI_TRUMPET_FLIPPED%)
+    if  "%TYPE%"  eq "IMPORTANT"      (set DECORATOR_LEFT=%ANSI_RED%%EMOJI_TRUMPET_COLORABLE%%@ANSI_FG[255,127,0]%EMOJI_TRUMPET_COLORABLE%%@ansi_fg[212,234,0]%EMOJI_TRUMPET_COLORABLE%%ANSI_BRIGHT_GREEN%%EMOJI_TRUMPET_COLORABLE%%ANSI_BRIGHT_BLUE%%EMOJI_TRUMPET_COLORABLE%%@ANSI_FG[200,0,200]%EMOJI_TRUMPET_COLORABLE%  %ANSI_RESET%%BLINKING_PENTAGRAM%%ANSI_COLOR_IMPORTANT% %DOUBLE_UNDERLINE_ON%`` %+ set DECORATOR_RIGHT=%DOUBLE_UNDERLINE_OFF% %ANSI_RESET%%BLINKING_PENTAGRAM%%ANSI_COLOR_IMPORTANT%  %@ANSI_FG[200,0,200]%EMOJI_TRUMPET_FLIPPED%%ANSI_BRIGHT_BLUE%%EMOJI_TRUMPET_FLIPPED%%ANSI_BRIGHT_GREEN%%EMOJI_TRUMPET_FLIPPED%%@ansi_fg[212,234,0]%EMOJI_TRUMPET_FLIPPED%%@ANSI_FG[255,127,0]%EMOJI_TRUMPET_FLIPPED%%ANSI_RED%%EMOJI_TRUMPET_FLIPPED%)
+    REM "%TYPE%"  eq "WARNING"        (set DECORATOR_LEFT=%EMOJI_WARNING%%EMOJI_WARNING%%EMOJI_WARNING% %blink%!!%blink_off% `` %+ set DECORATOR_RIGHT= %blink%!!%blink_off% %EMOJI_WARNING%%EMOJI_WARNING%%EMOJI_WARNING%)
+    if  "%TYPE%"  eq "WARNING"        (set DECORATOR_LEFT=%RED_FLAG%%RED_FLAG%%RED_FLAG%%ANSI_COLOR_WARNING% %EMOJI_WARNING%%EMOJI_WARNING%%EMOJI_WARNING% %@ANSI_BG_RGB[0,0,255]%blink%!!%blink_off% ``  %+  set DECORATOR_RIGHT= %blink%!!%blink_off%%ANSI_COLOR_WARNING% %EMOJI_WARNING%%EMOJI_WARNING%%EMOJI_WARNING% %RED_FLAG%%RED_FLAG%%RED_FLAG%)
+    if  "%TYPE%"  eq "CELEBRATION"    (set DECORATOR_LEFT=*** %EMOJI_BIRTHDAY_CAKE% ``        %+ set DECORATOR_RIGHT=! %EMOJI_BIRTHDAY_CAKE% ***)
     if  "%TYPE%"  eq "COMPLETION"     (set DECORATOR_LEFT=*** ``        %+ set DECORATOR_RIGHT=! ***)
     if  "%TYPE%"  eq "ALARM"          (set DECORATOR_LEFT=* ``          %+ set DECORATOR_RIGHT= *)
     if  "%TYPE%"  eq "ERROR"          (set DECORATOR_LEFT=*** ``        %+ set DECORATOR_RIGHT= ***)
@@ -132,8 +139,8 @@ REM Actually display the message
             if "%TYPE%"     eq "UNIMPORTANT"  (echos %FAINT_ON%)
             if "%TYPE%"     eq "SUCCESS"      (echos  %BOLD_ON%)
             if "%TYPE%"     eq "CELEBRATION"  (
-                if        %msgNum        == 1 (echos %BIG_TOP_ON%    ``)
-                if        %msgNum        == 2 (echos %BIG_BOT_ON%    ``)
+                if        %msgNum        == 1 (echos %BIG_TOP_ON%``)
+                if        %msgNum        == 2 (echos %BIG_BOT_ON%``)
             )
             if "%TYPE%"     eq "ERROR"   (
                 if %@EVAL[%msgNum mod 2] == 1 (echos %REVERSE_ON%)
@@ -157,13 +164,14 @@ REM Actually display the message
             if "%TYPE%"     eq "UNIMPORTANT" (echos %FAINT_OFF%)
             if "%TYPE%"     eq "SUBTLE"      (echos %FAINT_OFF%)
             if "%TYPE%"     eq "SUCCESS"     (echos  %BOLD_OFF%)
-            if "%TYPE%"     eq "CELEBRATION"  (
-                if        %msgNum        == 1 (echos     ``)
-                if        %msgNum        == 2 (echos     ``)
+            if "%TYPE%"     eq "CELEBRATION" (
+                if 1 == %msgNum% (echos     ``)
+                if 2 == %msgNum% (echos     ``)
             )
             if  %BIG_HEADER eq    1          (echos %BLINK_OFF%)
-            %COLOR_NORMAL% 
-            echo ``
+            REM %COLOR_NORMAL% 
+            REM echo ``
+            echo %ANSI_COLOR_NORMAL%``
         )
         REM display our closing big-header, if we are in big-header mode
         if %BIG_HEADER eq 1 (set COLOR_TO_USE=%OUR_COLORTOUSE% %+ call bigecho ****%DECORATOR_LEFT%%@UPPER[%TYPE%]%DECORATOR_RIGHT%****)
