@@ -1,20 +1,28 @@
-@echo off
-
-:REQUIRES: exit-maybe.bat, warning.bat, fatalerror.bat, white-noise.bat (optional), bigecho.bat (optional)
-                                        REM car.bat, nocar.bat removed from requires 20230825
-
-::::: USAGE:
-    :: call validate-environment-variable VARNAME_NO_PERCENT "some error message" or "skip_validation_existence"
-    ::      where option can be:
-    ::                           "skip_validation_existence" to skip existence validation
-    ::                           "some error message"        to be additional information provided to user if there is an error
+@Echo off
 
 ::::: GET PARAMETERS:
-    set VEVPARAMS=%*
-    set VARNAME=%1                                                                           %+ if %DEBUG_VALIDATE_ENV_VAR% eq 1 echo %DEBUGPREFIX% if defined %VARNAME% goto :Defined_YES
+    set VEVPARAMS=%1$
+    set VARNAME=%1      
     set PARAM2=%2
     set PARAM3=%3
     set USER_MESSAGE=%2$
+    if %DEBUG_VALIDATE_ENV_VAR% eq 1 (echo %DEBUGPREFIX% if defined %VARNAME% goto :Defined_YES)
+    set LAST_TITLE=%_WINTITLE
+    title %0
+
+:USAGE:  call validate-environment-variable VARNAME_NO_PERCENT "some error message" or "skip_validation_existence"
+:USAGE:       where option can be:
+:USAGE:                             "skip_validation_existence" to skip existence validation
+:USAGE:                             "some error message"        to be additional information provided to user if there is an error
+
+:REQUIRES: exit-maybe.bat, warning.bat, fatalerror.bat, white-noise.bat (optional), bigecho.bat (optional)
+:                                       REM car.bat, nocar.bat removed from requires 20230825
+
+
+::::: DEBUG STUFFS:
+    :echo %ANSI_COLOR_DEBUG% %0 called with 1=%1, 2=%2, VARNAME=%VARNAME%, VEVPARAMS=%VEVPARAMS% %ANSI_COLOR_RESET%
+    :echo on
+
 
 ::::: CLEAR LONGTERM ERROR FLAGS:
     set DEBUG_VALIDATE_ENV_VAR=0
@@ -27,6 +35,9 @@
     set DEBUGPREFIX=- {validate-environment-variable} * ``
 
 ::::: VALIDATE PARAMETERS STRICTLY
+    rem call debug "param3            is %param3%"
+    rem call debug "validate_multiple is %validate_multiple%"
+    rem call debug "about to check if PARAM3 [%param3%] ne '' .and. VALIDATE_MULTIPLE [%VALIDATE_MULTIPLE] ne 1 .... ALL_PARAMS is: %*"
     if "%PARAM3%" ne "" .and. %VALIDATE_MULTIPLE ne 1 (
         call bigecho "%ANSI_COLOR_ALARM%*** ERROR! ***"
         color bright white on red
@@ -80,6 +91,9 @@
 
     if %VALIDATE_MULTIPLE ne 1 (
         gosub validate_environment_variable %VARNAME%
+
+        rem If this script gets aborted, leaving this flag set can create false errors:
+        unset /q VALIDATE_MULTIPLE 
     ) else (
         set USER_MESSAGE=
         do i = 1 to %# (
@@ -185,15 +199,12 @@ goto :Past_The_End_Of_The_Sub-Routines
 
         ::::: ADDITIONALLY, VALIDATE THAT IT EXISTS, IF IT SEEMS TO BE POINTING TO A FOLDER/FILE:
             :Defined_YES
-            set VARVALUE=%[%VARNAME%]                        %+ if %DEBUG_VALIDATE_ENV_VAR% eq 1 (echo %DEBUGPREFIX%VARVALUE is %VARVALUE%)
-            set VARVALUEDRIVE=%@INSTR[0,1,%VARVALUE%])       %+ set IS_FILE_LOCATION=0
-
-            REM 20230825: i think we don't need to deal with car/nocar if the carrot is in quotes. Response to unrealted situation at: https://jpsoft.com/forums/threads/echo-rainbow-bat-rainbow-ize-any-message.11625/#post-66494
-            REM call   car >nul                                                                              %+ rem //Turn off the carat command-line separator so we can use it in regular expressions
-            if "1" eq "%@REGEX[^.?[A-Z]:,%@UPPER[%VARVALUE%]]" (set IS_FILE_LOCATION=1)
-            REM ON WINDOWS 10 AS OF 20220126 THIS CREATES PROBLEMS: call print-if-debug %DEBUGPREFIX%REGEXTEXT IS "%@REGEX[^[A-Z]:,%@UPPER[%VARVALUE%]]"
-            REM call nocar >nul                                                                              %+ rem //Turn on  the carat command-line separator so we can use it in our normal fasion
-
+            set VARVALUE=%[%VARNAME%]``                    %+ if %DEBUG_VALIDATE_ENV_VAR% eq 1 (echo %DEBUGPREFIX%VARVALUE is %VARVALUE%)
+            set VARVALUEDRIVE=%@INSTR[0,1,%VARVALUE%])     %+ set IS_FILE_LOCATION=0
+            setdos /x-5
+rem         if defined VARVALUE .and. "1" eq "%@REGEX[^[A-Z]:,%@UPPER[%VARVALUE%]]" (set IS_FILE_LOCATION=1)
+            if defined VARVALUE .and. "1" eq "%@REGEX[^[A-Z]:,%@UPPER[%VARVALUE%]]" (set IS_FILE_LOCATION=1)
+            setdos /x0
             if  "0" eq "%IS_FILE_LOCATION%"         (goto :DontValidateIfExists)
             if  "0" eq "%@READY[%VARVALUEDRIVE%]"   (goto :DontValidateIfExists)                         %+ rem //Don't look for if drive letter doesn't exist--it's SLOWWWWW
             if   1  eq  %SKIP_VALIDATION_EXISTENCE% (goto :DontValidateIfExists)                         %+ rem //Don't look for if we want to validate the variable only
@@ -250,3 +261,5 @@ goto :Past_The_End_Of_The_Sub-Routines
 :ItExistsAfterall
 :DontValidateIfExists
 :END
+call fix-window-title
+

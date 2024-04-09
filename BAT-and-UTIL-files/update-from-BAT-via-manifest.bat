@@ -7,6 +7,7 @@
 :DESCRIPTION: Copies specific files to "BAT" folder, in a zip
 :USAGE: SET MANIFEST_FILES=ingest_youtube_album.py download-youtube-album.bat or SET MANIFEST_FILES=NONE
 :USAGE: set SECONDARY_BAT_FILES=%MANIFEST_FILES% validate-in-path.bat delete-largest-file.bat add-ReplayGain-tags.bat add-ReplayGain-tags-to-all-FLACs.bat add-ReplayGain-tags-to-all-MP3s.bat change-into-temp-folder.bat set-latestfilename.bat 
+:USAGE: set SECONDARY_BAT_FILES_2=(in case your list of files is longer than 8192, use additional variables)
 :USAGE: set SECONDARY_UTIL_FILES=metamp3.exe metaflac.exe yt-dlp.exe
 :USAGE: call update-from-BAT-via-manifest.bat set-colors.bat
 REM todo
@@ -80,9 +81,18 @@ goto :END_OF_SUBROUTINES
         :process_type [shared_type]
             call print-if-debug "Doing shared_type='%shared_type%'"
             if not defined SECONDARY_%shared_type%_FILES goto :No_Files_Of_This_Type
-                set SOURCE_DIR=c:\%shared_type\
+                set                                SOURCE_DIR=c:\%shared_type\
                 call validate-environment-variable SOURCE_DIR
                 set OUR_FILELIST=%[SECONDARY_%shared_type%_FILES]
+                set OUR_FILELIST_2=%[SECONDARY_%shared_type%_FILES_2]
+                set OUR_FILELIST_3=%[SECONDARY_%shared_type%_FILES_3]
+                set OUR_FILELIST_4=%[SECONDARY_%shared_type%_FILES_4]
+                set OUR_FILELIST_5=%[SECONDARY_%shared_type%_FILES_5]
+                set OUR_FILELIST_6=%[SECONDARY_%shared_type%_FILES_6]
+                set OUR_FILELIST_7=%[SECONDARY_%shared_type%_FILES_7]
+                set OUR_FILELIST_8=%[SECONDARY_%shared_type%_FILES_8]
+                set OUR_FILELIST_9=%[SECONDARY_%shared_type%_FILES_9]
+                set OUR_FILELIST_10=%[SECONDARY_%shared_type%_FILES_10]
 
                 REM Create individual distribution files of our BATs, UTILs, as needed
                         REM Change into source folder to copy our files
@@ -94,7 +104,7 @@ goto :END_OF_SUBROUTINES
                                     if not exist %TARGET_DIR% mkdir /s %TARGET_DIR%
                                     call validate-environment-variable  TARGET_DIR
                         REM copy each file
-                                    for %file in (%OUR_FILELIST%) do (
+                                    for %file in (%OUR_FILELIST% %OUR_FILELIST_2% %OUR_FILELIST_3% %OUR_FILELIST_4% %OUR_FILELIST_5% %OUR_FILELIST_6% %OUR_FILELIST_7% %OUR_FILELIST_8% %OUR_FILELIST_9% %OUR_FILELIST_10%) do (
                                         if not exist "%file%" (call error "'%file%' does not exist")
                                         call print-if-debug "Doing file %file%"
                                         set filetarget=%TARGET_DIR%\%file%
@@ -125,8 +135,9 @@ goto :END_OF_SUBROUTINES
                             REM freshen if existing zip, otherwise add to new zip
                                     set ZIP_OPTIONS=/P /F /U
                                     if not exist %OUR_ZIP% set ZIP_OPTIONS=/A
-                                    set ZIP_COMMAND=*zip %ZIP_OPTIONS% %OUR_ZIP% %OUR_FILELIST%
+                                    set ZIP_COMMAND=*zip %ZIP_OPTIONS% %OUR_ZIP% %OUR_FILELIST% %OUR_FILELIST_2% %OUR_FILELIST_3% %OUR_FILELIST_4% %OUR_FILELIST_5% %OUR_FILELIST_6% %OUR_FILELIST_7% %OUR_FILELIST_8% %OUR_FILELIST_9% %OUR_FILELIST_10% 
                             REM suppress stdout, any output now would be stderr so color it as such
+                                    echo.
                                     call important_less "Zipping associated %shared_type% files..."
                                     call unimportant    "    zip command: %ZIP_COMMAND%"
                                     call unimportant    "            CWD: %_CWD%"
@@ -141,8 +152,8 @@ goto :END_OF_SUBROUTINES
                                     REM set UNZIP_COMMAND=*unzip /v %OUR_ZIP%  
                                     REM call print-if-debug "Unzip command is: %UNZIP_COMMAND ... and will redirect to target: '%OUR_TXT%'"
                                     REM sort it (cygwin sort.exe) 
-                                    echo *unzip /v %OUR_ZIP% `|` call cygsort --ignore-case -k5 `>`"%OUR_TXT"
-                                         *unzip /v %OUR_ZIP%  |  call cygsort --ignore-case -k5  > "%OUR_TXT"
+                                    REM echo *unzip /v %OUR_ZIP% `|` call cygsort --ignore-case -k5 `>`"%OUR_TXT"
+                                             *unzip /v %OUR_ZIP%  |  call cygsort --ignore-case -k5  > "%OUR_TXT"
                                     call errorlevel "Unzipping our associated %shared_type% file failed?!"
                                     call validate-environment-variable OUR_ZIP OUR_TXT
                         popd
@@ -150,6 +161,7 @@ goto :END_OF_SUBROUTINES
                         REM make sure we add everything to the repo
                                 set SKIP_GIT_ADD_VALIDATION_OLD=%SKIP_GIT_ADD_VALIDATION%
                                 set SKIP_GIT_ADD_VALIDATION=1
+                                echo.
                                 call print-if-debug "git-add %PROJECT_DIR%\%SECONDARY_SUBFOLDER_FOLDERNAME%\*.*"
                                 call                 git-add %PROJECT_DIR%\%SECONDARY_SUBFOLDER_FOLDERNAME%\*.* 
                                 set SKIP_GIT_ADD_VALIDATION=%SKIP_GIT_ADD_VALIDATION_OLD%
@@ -167,7 +179,7 @@ rem reset our values so they don't accidentally get re-used, and CELEBRATE:
         SET MANIFEST_FILES=
         set SECONDARY_BAT_FILES=
         set SECONDARY_UTIL_FILES=
-        call success "*** Successfully updated from personal to '%PROJECT_NAME%' :)"
+        call success "Successfully updated from personal to '%ITALICS%%PROJECT_NAME%%ITALICS_OFF%'"
         echo.
         %PROJECT_DIR%\%
 
